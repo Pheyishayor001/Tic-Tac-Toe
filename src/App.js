@@ -14,11 +14,6 @@ function Board({ xIsNext, squares, onPlay }) {
     const nextSquares = squares.slice(); //creating a copy of squares to prevent mutation.
     xIsNext ? (nextSquares[i] = "X") : (nextSquares[i] = "O"); //if xIsNext  'X' is rendered, else 'O' is rendered.
 
-    /*
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext); //reversing xIsNext to false for O to play. 
-    */
-
     onPlay(nextSquares); //replacing the setSquares and xIsNext calls to  the onPlay function.
   }
 
@@ -53,24 +48,22 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 
 export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-    setXIsNext(!xIsNext); //reversing xIsNext to false for O to play.
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0);
   }
 
-  const moves = history.map((squares, move) => {
+  const moves = history.map((_, move) => {
     const description = move > 0 ? `Go to move # ${move}` : "Go to game start";
 
     return (
@@ -104,12 +97,6 @@ const calculateWinner = function (squares) {
     [2, 4, 6],
   ];
 
-  // lines.forEach(function (line) {
-  //   console.log(line);
-  //   const [a, b, c] = line;
-  //   if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c])
-  //     return squares[a];
-  // });
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
